@@ -1,25 +1,36 @@
 import { CheckIcon } from "@chakra-ui/icons";
-import { List, ListIcon, ListItem, Stack } from "@chakra-ui/react";
-import { useEffect } from "react";
-import zxcvbn from 'zxcvbn'
+import {
+  Flex,
+  HStack,
+  List,
+  ListIcon,
+  ListItem,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import zxcvbn from "zxcvbn";
 
-const Stats = ({password}) => {
-  const results = zxcvbn(password)
+const Stats = ({ password }) => {
+  const results = zxcvbn(password);
 
-  useEffect(() => {
-    console.log(results)
-  }, [results])
   return (
     <>
       <Stack>
         <List spacing={3}>
           <ListItem>
-            <ListIcon as={CheckIcon} color="green.400" />
-            Guesses: {results.guesses}
+            <HStack>
+              <ListIcon as={CheckIcon} color="green.400" />
+              <Text>Guesses: {results.guesses}</Text>
+            </HStack>
           </ListItem>
           <ListItem>
-            <ListIcon as={CheckIcon} color="green.400" />
-            Score: {results.score}/4
+            <HStack>
+              <ListIcon as={CheckIcon} color="green.400" />
+              <Flex flexDir={'row'}>
+                <Text>Score: </Text>
+                <Text color={results.score >= 3 ? 'green.400' : results.score === 2 ? 'yellow.500' : 'red.500'} ml={1}>{results.score}/4</Text>
+              </Flex>
+            </HStack>
           </ListItem>
         </List>
       </Stack>

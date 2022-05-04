@@ -9,6 +9,11 @@ import {
   useClipboard,
   Input,
   useToast,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { generatePassword } from "../utils/generate";
@@ -22,19 +27,18 @@ const GenPassword = () => {
   const { onCopy } = useClipboard(password);
   const dispatch = useDispatch();
   const toast = useToast();
+  const [length, setLength] = useState(5);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const genPass = () => {
-    let pass = generatePassword();
-    pass = `${pass.substring(0, 3)}-${pass.substring(3, 6)}-${pass.substring(
-      6,
-      9
-    )}`;
+    let pass = generatePassword(length);
     setPassword(pass);
   };
-
+  
   useEffect(() => {
-    genPass();
-  }, []);
+    let pass = generatePassword(5);
+    setPassword(pass);
+  }, [])
 
   const handleSubmit = () => {
     if (name === "") {
@@ -68,7 +72,7 @@ const GenPassword = () => {
           borderRadius="lg"
           minW={{ sm: "100%", md: "700px" }}
           w="auto"
-          height={{ sm: "476px", md: "20rem" }}
+          height={{ sm: "476px", md: "23rem" }}
           direction={{ base: "column", md: "row" }}
           bg={useColorModeValue("white", "gray.900")}
           boxShadow={"2xl"}
@@ -103,19 +107,47 @@ const GenPassword = () => {
               fontSize={30}
               fontWeight={900}
               color={useColorModeValue("gray.800", "white")}
-              size="sm"
               mb={4}
             >
               {password}
             </Text>
+
             <Input
               placeholder="Name"
               w="70%"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            <Flex flexDir={"column"} w="70%">
+              <Text ml={-2} color="gray.600" fontWeight={"900"}>
+                Length
+              </Text>
+              <Slider
+                mt={2}
+                onChange={(v) => setLength(v)}
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+                min={5}
+                max={25}
+                aria-label="slider-ex-1"
+                defaultValue={5}
+              >
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <Tooltip
+                  hasArrow
+                  bg="blue.900"
+                  color="white"
+                  placement="top"
+                  isOpen={showTooltip}
+                  label={`${length}`}
+                >
+                  <SliderThumb />
+                </Tooltip>
+              </Slider>
+            </Flex>
             <Stats password={password} />
-
             <Stack
               width={"100%"}
               mt={"2rem"}
